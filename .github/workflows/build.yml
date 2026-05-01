@@ -1,0 +1,31 @@
+name: Build Electron DMG
+on:
+  push:
+    branches:
+      - main  # Jab aap main branch par push karengi tab ye chalega
+
+jobs:
+  build_mac:
+    runs-on: macos-latest  # Ye GitHub ka Mac server use karega
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-node-version: 20
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build DMG
+        run: npx electron-builder --mac
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: WellMind-Portal-DMG
+          path: dist_electron/*.dmg  # Ye build hone ke baad file ko save kar lega
